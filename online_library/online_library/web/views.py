@@ -32,6 +32,7 @@ def show_index(request):
     if not profile:
         return redirect('create profile')
     books = Book.objects.all()
+    book_count = len(books)
     books_matrix = []
     # for i in range(len(books)):
     #     books_matrix[i].append([i])
@@ -40,6 +41,7 @@ def show_index(request):
     context = {
         'profile': profile,
         'books': books,
+        'book_count': book_count
         # 'books_matrix': books_matrix,
     }
 
@@ -47,6 +49,7 @@ def show_index(request):
 
 
 def add_book(request):
+    profile = get_profile()
     if request.method == 'POST':
         form = AddBookForm(request.POST)
         if form.is_valid():
@@ -56,12 +59,14 @@ def add_book(request):
         form = AddBookForm()
     context = {
         'form': form,
+        'profile': profile,
     }
     return render(request, 'add-book.html', context)
 
 
 def edit_book(request, pk):
     book = Book.objects.get(pk=pk)
+    profile = get_profile()
     if request.method == 'POST':
         form = EditBookForm(request.POST, instance=book)
         if form.is_valid():
@@ -72,15 +77,18 @@ def edit_book(request, pk):
     context = {
         'form': form,
         "book": book,
+        'profile': profile,
     }
     return render(request, 'edit-book.html', context)
 
 
 def book_details(request, pk):
     book = Book.objects.get(pk=pk)
+    profile = get_profile()
 
     context = {
         'book': book,
+        'profile': profile,
     }
     return render(request, 'book-details.html', context)
 
